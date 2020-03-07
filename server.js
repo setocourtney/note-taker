@@ -21,6 +21,7 @@ app.get("/", (req, res) => {
 });
 
 //read db.json file containing notes objects and return as json
+    //readFile requires data to be parsed into JSON from text
 app.get("/api/notes", (req, res) => {
     fs.readFile(__dirname + "/db/db.json", "utf-8", (err, data) => {
         if (err) {
@@ -33,7 +34,15 @@ app.get("/api/notes", (req, res) => {
 
 //post new note object to db.json
 app.post("/api/notes", (req, res) => {
-
+    let newNote = req.body;
+    let data = JSON.parse(fs.readFileSync(__dirname + "/db/db.json"));
+    data.push({title: newNote.title, text: newNote.text});
+    fs.writeFile(__dirname + "/db/db.json", JSON.stringify(data), (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("Added new note");
+    });
 });
 
 //delete note object from db.json based on id 

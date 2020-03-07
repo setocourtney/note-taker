@@ -1,6 +1,8 @@
 # note-taker
 
-https://setocourtney.github.io/note-taker/.
+Deployed on Heroku : https://salty-journey-53602.herokuapp.com/
+
+https://setocourtney.github.io/note-taker/
 
 Node application that can be used to write, save, and delete notes. Uses an express backend to save and retrieve note data from a JSON file.
 

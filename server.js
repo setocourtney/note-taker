@@ -5,26 +5,29 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+app.use(express.static(__dirname + '/public'));
+
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 //return notes.html file
 app.get("/notes", (req, res) => {
-    res.sendFile(path.join(__dirname, "public/notes.html"));
+    res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
 //return index.html
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
 //read db.json file containing notes objects and return as json
 app.get("/api/notes", (req, res) => {
-    fs.readFile("/db/db.json", (err, data) => {
+    fs.readFile(__dirname + "/db/db.json", "utf-8", (err, data) => {
         if (err) {
             throw err;
-        };
-        return res.json(data);
+        }
+        let notes = JSON.parse(data);
+        return res.json(notes);
     });
 });
 

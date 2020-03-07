@@ -36,18 +36,38 @@ app.get("/api/notes", (req, res) => {
 app.post("/api/notes", (req, res) => {
     let newNote = req.body;
     let data = JSON.parse(fs.readFileSync(__dirname + "/db/db.json"));
-    data.push({title: newNote.title, text: newNote.text});
+    let id;
+
+    //set id to 1 more than id of last note in array or 0 if notes is empty
+    if (data.length === 0) {
+        id = 1;
+    } else {
+        id = data[data.length - 1].id + 1;
+    }
+
+    data.push({id: id, title: newNote.title, text: newNote.text});
+
     fs.writeFile(__dirname + "/db/db.json", JSON.stringify(data), (err) => {
         if (err) {
             throw err;
         }
-        console.log("Added new note");
+        res.end();
     });
 });
 
 //delete note object from db.json based on id 
-app.delete("/api/notes:id", (req, res) => {
+app.delete("/api/notes/:id", (req, res) => {
+    let delId = parseInt(req.params.id);
+    let data = JSON.parse(fs.readFileSync(__dirname + "/db/db.json"));
 
+    data = data.filter((note) => { return parseInt(note.id) !== delId;});
+
+    fs.writeFile(__dirname + "/db/db.json", JSON.stringify(data), (err) => {
+        if (err) {
+            throw err;
+        }
+        res.end();
+    });
 });
 
 app.listen(PORT, () => {
